@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: craig-test
+  labels:
+    lastpass-target: craig-test
+data:
+  player_initial_lives: "3"
+  ui_properties_file_name: "user-interface.properties"
+  game.properties: aa
+  user-interface.properties: asfsaf
