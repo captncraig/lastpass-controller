@@ -67,17 +67,16 @@ func main() {
 				return
 			}
 		}
-		existing, err := clientset.CoreV1().Secrets(cm.Namespace).Get(context.Background(), cm.GetName(), v1.GetOptions{})
+		_, err := clientset.CoreV1().Secrets(cm.Namespace).Get(context.Background(), cm.GetName(), v1.GetOptions{})
 		if err != nil && !errors.IsNotFound(err) {
 			log.Println(err)
 			return
-		}
-		if existing == nil {
-			log.Println(clientset.CoreV1().Secrets(cm.Namespace).Create(context.Background(), sec, v1.CreateOptions{}))
+		} else if errors.IsNotFound(err) {
+			_, err = clientset.CoreV1().Secrets(cm.Namespace).Update(context.Background(), sec, v1.UpdateOptions{})
 		} else {
-			log.Println(clientset.CoreV1().Secrets(cm.Namespace).Update(context.Background(), sec, v1.UpdateOptions{}))
+			_, err = clientset.CoreV1().Secrets(cm.Namespace).Create(context.Background(), sec, v1.CreateOptions{})
 		}
-
+		log.Println(err)
 	}
 	informer.AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
