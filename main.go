@@ -9,6 +9,7 @@ import (
 
 	"github.com/ansd/lastpass-go"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
@@ -67,7 +68,7 @@ func main() {
 			}
 		}
 		existing, err := clientset.CoreV1().Secrets(cm.Namespace).Get(context.Background(), cm.GetName(), v1.GetOptions{})
-		if err != nil {
+		if err != nil && !errors.IsNotFound(err) {
 			log.Println(err)
 			return
 		}
