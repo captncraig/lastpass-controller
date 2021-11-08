@@ -66,8 +66,16 @@ func main() {
 				return
 			}
 		}
-		//log.Println(sec)
-		log.Println(clientset.CoreV1().Secrets(cm.Namespace).Create(context.Background(), sec, v1.CreateOptions{}))
+		existing, err := clientset.CoreV1().Secrets(cm.Namespace).Get(context.Background(), cm.GetName(), v1.GetOptions{})
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		if existing == nil {
+			log.Println(clientset.CoreV1().Secrets(cm.Namespace).Create(context.Background(), sec, v1.CreateOptions{}))
+		} else {
+			log.Println(clientset.CoreV1().Secrets(cm.Namespace).Update(context.Background(), sec, v1.UpdateOptions{}))
+		}
 
 	}
 	informer.AddEventHandler(cache.ResourceEventHandlerFuncs{
