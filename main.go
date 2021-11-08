@@ -69,12 +69,12 @@ func main() {
 		}
 		_, err := clientset.CoreV1().Secrets(cm.Namespace).Get(context.Background(), cm.GetName(), v1.GetOptions{})
 		if err != nil && !errors.IsNotFound(err) {
-			log.Println(err)
+			log.Println("Fetching secret:", err)
 			return
 		} else if errors.IsNotFound(err) {
-			_, err = clientset.CoreV1().Secrets(cm.Namespace).Update(context.Background(), sec, v1.UpdateOptions{})
-		} else {
 			_, err = clientset.CoreV1().Secrets(cm.Namespace).Create(context.Background(), sec, v1.CreateOptions{})
+		} else {
+			_, err = clientset.CoreV1().Secrets(cm.Namespace).Update(context.Background(), sec, v1.UpdateOptions{})
 		}
 		log.Println(err)
 	}
