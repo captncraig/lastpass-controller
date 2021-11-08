@@ -1,11 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: craig-test
+  name: github-creds
   labels:
-    lastpass-target: craig-test
+    lastpass-secret: true
 data:
-  player_initial_lives: "3"
-  ui_properties_file_name: "user-interface.properties"
-  game.properties: aa
-  user-interface.properties: asfsaf
+  username: github-username
+  password: github-password
