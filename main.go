@@ -60,7 +60,7 @@ func main() {
 		})
 		for k, v := range cm.Data {
 			log.Println(k, v)
-			sec.Data[k], err = getSecretData(k)
+			sec.Data[k], err = getSecretData(v)
 			if err != nil {
 				log.Println(err)
 				return
