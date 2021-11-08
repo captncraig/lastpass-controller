@@ -60,9 +60,13 @@ func main() {
 		})
 		for k, v := range cm.Data {
 			log.Println(k, v)
-			sec.Data[k] = []byte(v)
+			sec.Data[k], err = getSecretData(k)
+			if err != nil {
+				log.Println(err)
+				return
+			}
 		}
-		log.Println(sec)
+		//log.Println(sec)
 		log.Println(clientset.CoreV1().Secrets(cm.Namespace).Create(context.Background(), sec, v1.CreateOptions{}))
 
 	}
@@ -77,19 +81,19 @@ func main() {
 	informer.Run(stopper)
 }
 
-func getSecretData(name string) (string, error) {
+func getSecretData(name string) ([]byte, error) {
 	client, err := lastpass.NewClient(context.Background(), os.Getenv("LASTPASS_USER"), os.Getenv("LASTPASS_PASS"))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	accounts, err := client.Accounts(context.Background())
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	for _, acc := range accounts {
 		if acc.Name == name {
-			return acc.Password, nil
+			return []byte(acc.Password), nil
 		}
 	}
-	return "", fmt.Errorf("Account named %s not found", name)
+	return nil, fmt.Errorf("Account named %s not found", name)
 }
